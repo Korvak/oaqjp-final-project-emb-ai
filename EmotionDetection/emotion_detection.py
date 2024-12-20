@@ -6,6 +6,8 @@ def emotion_detector(text_to_analyse):
     headers = {"grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock"}
     jsonObj = { "raw_document": { "text": text_to_analyse } }
     response = requests.post(url, json = jsonObj, headers = headers )
+    #returns an empty dict if the request was badly formatted
+    if (response.status_code == 400): return get_empty_emotion_dict()
     formatted_response = json.loads(response.text)
     '''this is an example response :
     {
@@ -48,3 +50,13 @@ def emotion_detector(text_to_analyse):
     emotions["dominant_emotion"] = max(emotions, key = lambda x: emotions[x])
     #returns the emotions with the dominant one in a dictonary format emotion : normalized_score
     return emotions
+
+def get_empty_emotion_dict():
+    return {
+        "anger" :   None,
+        "disgust" : None,
+        "fear" :    None,
+        "joy" :     None,
+        "sadness" : None,
+        "dominant_emotion" : None
+    }
